@@ -74,6 +74,7 @@ namespace Product_Management_System.Controllers
 
         public IActionResult SortProducts(string sortOrder)
         {
+            // It is used for sorting the records
             var products = GetProducts();
             switch (sortOrder)
             {
