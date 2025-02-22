@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Product_Management_System.Models.ProductViewModel>
+@{
+    ViewBag.Title = "Product Management";
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<h2 class="my-4 text-center">Product Management</h2>
+
+<div class="container">
+   
+    <form asp-action="AddProduct" method="post" class="mb-4 p-3 border rounded bg-light">
+        <h4>Add Product</h4>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="ProductCode" class="form-label">Product Code</label>
+                <input type="text" class="form-control" id="ProductCode" name="ProductCode" required />
+            </div>
+            <div class="col-md-6">
+                <label for="ProductName" class="form-label">Product Name</label>
+                <input type="text" class="form-control" id="ProductName" name="ProductName" required />
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="CategoryId" class="form-label">Category</label>
+                <select class="form-select" id="CategoryId" name="CategoryId" required>
+                    <option value="">-- Select Category --</option>
+                    @foreach (var category in ViewBag.Categories as List<SelectListItem>)
+                    {
+                        <option value="@category.Value">@category.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="Quantity" class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="Quantity" name="Quantity" required />
+            </div>
+            <div class="col-md-3">
+                <label for="Price" class="form-label">Price</label>
+                <input type="number" step="0.01" class="form-control" id="Price" name="Price" required />
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Product</button>
+    </form>
+    <form asp-action="SortProducts" style="margin-bottom:5px" method="get" class="mt-3">
+        <div class="d-flex align-items-center">
+            <label for="sortOrder" class="form-label me-2">Sort By:</label>
+            <select id="sortOrder" name="sortOrder" class="form-select w-auto" onchange="this.form.submit()">
+                <option value="NameAsc">Name Ascending</option>
+                <option value="NameDesc">Name Descending</option>
+            </select>
+        </div>
+    </form>
+    <form asp-action="DeleteProducts" method="post" id="deleteForm">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product Code</th>
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <td>@product.ProductCode</td>
+                        <td>@product.ProductName</td>
+                        <td>@product.CategoryId</td>
+                        <td>@product.Quantity</td>
+                        <td>@product.Price</td>
+                        <td>@product.Amount</td>
+                        <td>
+                            <input type="checkbox" value="@product.ProductId" name="productIds" class="form-check-input" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-danger">Delete Selected</button>
+    </form>  
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("deleteForm").addEventListener("submit", function (e) {
+            const selectedProducts = Array.from(document.querySelectorAll("input[name='productIds']:checked"));
+            if (selectedProducts.length === 0) {
+                e.preventDefault();
+                alert("Please select at least one product to delete.");
+            }
+        });
+    </script>
+}
